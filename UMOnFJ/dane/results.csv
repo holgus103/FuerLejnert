@@ -1,0 +1,24 @@
+Zbior test3.csv train3.csv
+kernel; c/gamma; tol; jakosc zbioru trenujacego (1vs1); jakosc zbiory testowego (1vs1); jakosc zbioru trenujacego (1vsR); jakosc zbiory testowego (1vsR)
+laplacean;5;0.001;1.0;0.99;1.0;0.98
+sinc;10;0.0001;0.97;0.91;0.93;0.89
+quadratic;5;0.0001;0.98;0.91;1.0;0.94
+multiquadric;10;0.0001;0.99;0.96;0.76;0.98
+Zbior test33.csv train33.csv
+kernel; c/gamma; tol; jakosc zbioru trenujacego (1vs1); jakosc zbiory testowego (1vs1); jakosc zbioru trenujacego (1vsR); jakosc zbiory testowego (1vsR)
+laplacean;5;0.001;1.0;0.92;1.0;0.94
+sinc;10;0.0001;0.89;0.9;0.84;0.88
+quadratic;5;0.0001;0.91;0.92;0.87;0.94
+multiquadric;10;0.0001;0.87;0.94;0.73;0.94
+Zbior test4.csv train4.csv
+kernel; c/gamma; tol; jakosc zbioru trenujacego (1vs1); jakosc zbiory testowego (1vs1); jakosc zbioru trenujacego (1vsR); jakosc zbiory testowego (1vsR)
+laplacean;5;0.001;1.0;0.72;1.0;0.73
+sinc;10;0.0001;0.59;0.35;0.52;0.41
+quadratic;5;0.0001;0.54;0.32;0.43;0.33
+multiquadric;10;0.0001;0.49;0.4;0.44;0.44
+Zbior test5.csv train5.csv
+kernel; c/gamma; tol; jakosc zbioru trenujacego (1vs1); jakosc zbiory testowego (1vs1); jakosc zbioru trenujacego (1vsR); jakosc zbiory testowego (1vsR)
+laplacean;5;0.001;1.0;0.88;1.0;0.83
+sinc;10;0.0001;0.95;0.84;0.44;0.83
+quadratic;5;0.0001;0.83;0.84;0.33;0.74
+multiquadric;10;0.0001;0.54;0.83;0.12;0.75

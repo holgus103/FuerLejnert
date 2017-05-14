@@ -1,4 +1,4 @@
-import numpy as np
+﻿import numpy as np
 from preprocessing import getData
 from sklearn.svm import SVC 
 
@@ -13,46 +13,55 @@ x_test, y_test = getData(sciezka + test[0])
 
 kategorie = np.unique(y_train)
 
-
-
-def MOC(C, kernel, tol, x_train, x_test, y_train, y_test):
-    labels_1 = []
-    labels_2 = []
-    test1_labels = []
-    test2_labels = []
-    def getValueForFirstSet(val):
+def getValueForFirstSet(val):
         if val > 2 :
             return 1
         else:
             return -1
 
-    def getValueForSecondSet(val):
+def getValueForSecondSet(val):
         if val % 2 == 0 :
             return 1
         else:
             return -1
+
+def compute(C, kernel, tol, x_train, x_test, y_train, y_test, funcs):
+    train_labels = []
+    test_labels = []
+    count = len(funcs)
+    # initialize lists
+    for i in range(0, count):
+        train_labels.insert(i,[])
+        test_labels.insert(i,[])
+    # initialize train label lists
     for i in range(0,y_train.size):
-        labels_1.insert(i, getValueForFirstSet(y_train[i]));
-        labels_2.insert(i, getValueForSecondSet(y_train[i]));
+        for j in range(0, count):
+            train_labels[j].insert(i, funcs[j](y_train[i]));
 
     for i in range(0,y_test.size):
-        test1_labels.insert(i, getValueForFirstSet(y_test[i]));
-        test2_labels.insert(i, getValueForSecondSet(y_test[i]));
+        for j in range(0, count):
+            test_labels[j].insert(i, funcs[j](y_test[i]));
+ 
+    bits = [];
+    pred = [];
+    for i in range(0, count):
+        bits.insert(i, SVC(C=C, kernel=kernel, tol=tol).fit(x_train, train_labels[i]))
 
-    bit1 = SVC(C=C, kernel=kernel, tol=tol).fit(x_train, labels_1)
-    bit2 = SVC(C=C, kernel=kernel, tol=tol).fit(x_train, labels_2)
+    score = 0;
+    for i in range(0, count):
+        pred.insert(i, bits[i].predict(x_test));
 
-    score = 0
-    pred1 = bit1.predict(x_test);
-    pred2 = bit2.predict(x_test);
-
-    for i in range(0, len(pred1)-1):
-        if(pred1[i] == test1_labels[i] and pred2[i] == test2_labels[i]):
-            score = score + 1
+    for i in range(0, pred[0].size):
+        res = True
+        for j in range(0, len(pred)):
+            res = res and pred[j][i] == test_labels[j][i] 
+        if res :
+          score = score + 1
 
     return score / y_test.size * 100
 
+def MOC(C, kernel, tol, x_train, x_test, y_train, y_test):
+    return compute(C, kernel, tol, x_train, x_test, y_train, y_test, [getValueForFirstSet, getValueForSecondSet])
 
-
-print("acc: ", MOC(10, "rbf", 0.0001, x_train, x_test, y_train, y_test));
+print("acc: ", MOC(10, "rbf", 0.0001, x_train, x_test, y_train, y_test))
 

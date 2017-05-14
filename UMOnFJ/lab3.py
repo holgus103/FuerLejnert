@@ -1,6 +1,7 @@
 ﻿import numpy as np
+import kernelFunctions as kf
 from preprocessing import getData
-from sklearn.svm import SVC 
+from sklearn.svm import SVC
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.multiclass import OneVsRestClassifier
 test = ['test3.csv', 'test33.csv', 'test4.csv', 'test5.csv']
@@ -12,69 +13,16 @@ params = [5,10,5, 10]
 tols = [0.001, 0.0001, 0.0001, 0.0001]
 
 
-def rbf_kernel(X,Y,gamma):
-        gram_matrix = np.zeros((X.shape[0], Y.shape[0]))
-        for i, x in enumerate(X):
-                for j, y in enumerate(Y):
-                    gram_matrix[i, j] = np.exp(-gamma * np.sum((np.absolute(x - y)) ** 2))
-        return gram_matrix
-
-def laplacean(X,Y,gamma):
-        gram_matrix = np.zeros((X.shape[0], Y.shape[0]))
-        for i, x in enumerate(X):
-                for j, y in enumerate(Y):
-                    gram_matrix[i, j] = np.exp(-gamma * np.sum((np.absolute(x - y))))
-        return gram_matrix
-
-def sinc(X,Y):
-        gram_matrix = np.zeros((X.shape[0], Y.shape[0]))
-        for i, x in enumerate(X):
-                for j, y in enumerate(Y):
-                    sum = np.sum(np.absolute(x - y))
-                    gram_matrix[i, j] = np.sinc(sum)
-        return gram_matrix
-
-def sinc2(X,Y):
-        gram_matrix = np.zeros((X.shape[0], Y.shape[0]))
-        for i, x in enumerate(X):
-                for j, y in enumerate(Y):
-                    sum = np.sum(np.absolute(x - y)) ** 2
-                    gram_matrix[i, j] = np.sinc(sum)
-        return gram_matrix
-
-def quadratic(X,Y,c):
-        gram_matrix = np.zeros((X.shape[0], Y.shape[0]))
-        for i, x in enumerate(X):
-                for j, y in enumerate(Y):
-                    sum = np.sum(np.absolute(x - y)) ** 2
-                    gram_matrix[i, j] = 1 - sum / (sum + c)
-        return gram_matrix
-
-def multiquadric(X,Y,c):
-        gram_matrix = np.zeros((X.shape[0], Y.shape[0]))
-        for i, x in enumerate(X):
-                for j, y in enumerate(Y):
-                    sum = np.sum(np.absolute(x - y)) ** 2
-                    gram_matrix[i, j] = - np.sqrt(sum + c * c)
-        return gram_matrix
-
-def inverse_multiquadric(X,Y,c):
-        gram_matrix = np.zeros((X.shape[0], Y.shape[0]))
-        for i, x in enumerate(X):
-                for j, y in enumerate(Y):
-                    sum = np.sum(np.absolute(x - y)) ** 2
-                    gram_matrix[i, j] = 1 / np.sqrt(sum + c * c)
-        return gram_matrix
 
 kernels = ['laplacean', 'sinc', 'quadratic', 'multiquadric']
-cores = ['rbf', 'linear', 'poly', 'sigmoid'] 
+cores = ['rbf', 'linear', 'poly', 'sigmoid']
 
 def get_kernel(i, x, y, param):
     return {
-    0: lambda x,y,param: laplacean(x,y,param),
-    1: lambda x,y,param: sinc(x,y),
-    2: lambda x,y,param: quadratic(x,y,param),
-    3: lambda x,y,param: multiquadric(x,y,param),
+    0: lambda x,y,param: kf.laplacean(x,y,param),
+    1: lambda x,y,param: kf.sinc(x,y),
+    2: lambda x,y,param: kf.quadratic(x,y,param),
+    3: lambda x,y,param: kf.multiquadric(x,y,param),
     }[i](x,y,param)
 
 for i in range(0,4):

@@ -38,7 +38,7 @@ def compute(C, kernel, tol, x_train, x_test, y_train, y_test, funcs):
     return float(score) / y_test.size * 100
 
 
-def MOC(C, kernel, tol, x_train, x_test, y_train, y_test):
+def MOC4(C, kernel, tol, x_train, x_test, y_train, y_test):
     def getValueForFirstSet(val):
             if val > 2 :
                 return 1
@@ -52,11 +52,33 @@ def MOC(C, kernel, tol, x_train, x_test, y_train, y_test):
                 return -1
     return compute(C, kernel, tol, x_train, x_test, y_train, y_test, [getValueForFirstSet, getValueForSecondSet])
 
-def OneVsAll(C, kernel, tol, x_train, x_test, y_train, y_test):
-    def base(val, index):
-        if val == index:
-            return 1
-        else:
-            return -1
+def base(val, index):
+    if val == index:
+        return 1
+    else:
+        return -1
+
+
+def OneVsAll4(C, kernel, tol, x_train, x_test, y_train, y_test):
     funcs = [lambda val: base(val, 1),lambda val: base(val, 2),lambda val: base(val, 3),lambda val: base(val, 4) ]
+    return compute(C, kernel, tol, x_train, x_test, y_train, y_test, funcs)
+
+def OneVsAll16(C, kernel, tol, x_train, x_test, y_train, y_test):
+    funcs = []
+    for i in range(1, 17):
+        funcs.insert(i, lambda val: base(val, i))
+    return compute(C, kernel, tol, x_train, x_test, y_train, y_test, funcs)
+
+def mocBase(val, i):
+    print "val: ", val
+    print "i: ", i
+    if (int(val) & (1 << (i-1))) > 0:
+        return 1
+    else:
+        return -1
+
+def MOC16(C, kernel, tol, x_train, x_test, y_train, y_test):
+    funcs = []
+    for i in range(1, 5):
+        funcs.insert(i, lambda val:  mocBase(val, i))
     return compute(C, kernel, tol, x_train, x_test, y_train, y_test, funcs)

@@ -1,4 +1,4 @@
-
+import numpy as np
 def rbf_kernel(X,Y,gamma):
         gram_matrix = np.zeros((X.shape[0], Y.shape[0]))
         for i, x in enumerate(X):
@@ -13,7 +13,7 @@ def laplacean(X,Y,gamma):
                     gram_matrix[i, j] = np.exp(-gamma * np.sum((np.absolute(x - y))))
         return gram_matrix
 
-def sinc(X,Y):
+def sinc(X,Y, c):
         gram_matrix = np.zeros((X.shape[0], Y.shape[0]))
         for i, x in enumerate(X):
                 for j, y in enumerate(Y):

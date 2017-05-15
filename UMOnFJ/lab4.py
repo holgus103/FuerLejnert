@@ -1,6 +1,6 @@
 ﻿import numpy as np
 from preprocessing import getData
-
+import kernelFunctions as kf
 from classifiers import MOC, OneVsAll
 
 test = ['test3.csv', 'test33.csv', 'test4.csv', 'test5.csv']
@@ -20,8 +20,14 @@ def writeRow(kernel, c, tolerance, mocVal, avoValue):
         f.write(";")
     f.write("\n")
 
+def iteration(j, train_mapped, test_mapped):
+    resMoc = MOC(c[j%2], cores[j], tols[j%4], train_mapped, test_mapped, y_train, y_test)
+    resOvo = OneVsAll(c[j%2], cores[j], tols[j%4], train_mapped, test_mapped, y_train, y_test)
+    writeRow(cores[j], c[j%2], tols[j%4], resMoc, resOvo)
+
 f = open('results.csv', 'w')
 #for each data set
+kernels = [kf.laplacean, kf.sinc, kf.quadratic, kf.multiquadric]
 for i in range(0, 3):
     x_train, y_train = getData(sciezka + train[i])
     x_test, y_test = getData(sciezka + test[i])
@@ -31,9 +37,10 @@ for i in range(0, 3):
     writeHeader(f)
 
     #for each configuration
-    for j in range(0, 12):
-        resMoc = MOC(c[j%2], cores[j], tols[j%4], x_train, x_test, y_train, y_test)
-        resOvo = OneVsAll(c[j%2], cores[j], tols[j%4], x_train, x_test, y_train, y_test)
-        writeRow(cores[j], c[j%2], tols[j%4], resMoc, resOvo)
+    for j in range(0, 8):
+        iteration(j, x_train, x_test)
+    for j in range(8, 12):
+        iteration(j,kernels[j-8](x_train, x_train, 10), kernels[j-8](x_test, x_test, 10))
+
 
 f.close()

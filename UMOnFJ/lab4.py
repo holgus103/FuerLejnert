@@ -20,8 +20,8 @@ def writeRow(kernel, c, tolerance, mocVal, avoValue):
         f.write(";")
     f.write("\n")
 
-def iteration(j, train_mapped, test_mapped):
-    if(j< 3):
+def iteration(i, j, train_mapped, test_mapped):
+    if(i< 3):
         resMoc = MOC4(c[j%2], cores[j], tols[j%4], train_mapped, test_mapped, y_train, y_test)
         resOvo = OneVsAll4(c[j%2], cores[j], tols[j%4], train_mapped, test_mapped, y_train, y_test)
     else:
@@ -41,9 +41,9 @@ for i in range(0, 4):
     writeHeader(f)
     #for each configuration
     for j in range(0, 8):
-        iteration(j, x_train, x_test)
+        iteration(i, j, x_train, x_test)
     for j in range(8, 12):
-        iteration(j,kernels[j-8](x_train, x_train, 10), kernels[j-8](x_test, x_test, 10))
+        iteration(i, j,kernels[j-8](x_train, x_train, 10), kernels[j-8](x_test, x_test, 10))
 
 
 

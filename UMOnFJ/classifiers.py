@@ -11,6 +11,7 @@ def compute(C, kernel, tol, x_train, x_test, y_train, y_test, funcs):
         train_labels.insert(i,[])
         test_labels.insert(i,[])
     # initialize train label lists
+    # print(y_train)
     for i in range(0,y_train.size):
         for j in range(0, count):
             train_labels[j].insert(i, funcs[j](y_train[i]));
@@ -21,6 +22,7 @@ def compute(C, kernel, tol, x_train, x_test, y_train, y_test, funcs):
 
     bits = [];
     pred = [];
+    # print(train_labels)
     for i in range(0, count):
         bits.insert(i, SVC(C=C, kernel=kernel, tol=tol).fit(x_train, train_labels[i]))
 
@@ -70,15 +72,17 @@ def OneVsAll16(C, kernel, tol, x_train, x_test, y_train, y_test):
     return compute(C, kernel, tol, x_train, x_test, y_train, y_test, funcs)
 
 def mocBase(val, i):
-    print "val: ", val
-    print "i: ", i
+    # print "val: ", val
+    # print "i: ", i
     if (int(val) & (1 << (i-1))) > 0:
+        # print("1")
         return 1
     else:
+        # print("-1")
         return -1
 
 def MOC16(C, kernel, tol, x_train, x_test, y_train, y_test):
-    funcs = []
+    funcs = [] #[lambda val: mocBase(val, 1), lambda val:mocBase(val, 2), lambda val:mocBase(val, 3), lambda val:mocBase(val, 4) ]
     for i in range(1, 5):
-        funcs.insert(i, lambda val:  mocBase(val, i))
+        funcs.insert(i, lambda val: mocBase(val, i))
     return compute(C, kernel, tol, x_train, x_test, y_train, y_test, funcs)

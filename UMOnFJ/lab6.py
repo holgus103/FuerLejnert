@@ -1,12 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import numpy as np
 from preprocessing import getData
 from sklearn.svm import SVR
-
+import kernelFunctions as kf
 #import matplotlib.pyplot as plt
 #from matplotlib import cm
 #from mpl_toolkits.mplot3d import Axes3D
 
-sciezka = '../lab6/'
+sciezka = './dane/'
 print('Uzywam sciezki: ' + sciezka)
 xlearn, rlearn = getData(sciezka + 'train7.csv')
 xtest, rtest = getData(sciezka + 'test7.csv')
@@ -15,6 +17,12 @@ svr_rbf = SVR(kernel='rbf', C=1, gamma=0.1)
 svr_lin = SVR(kernel='linear', C=1)
 svr_poly = SVR(kernel='poly', C=1, degree=2)
 
+svr_custom = SVR(kernel='precomputed')
+gram_train = kf.laplacean(xlearn, xlearn, 10)
+gram = kf.laplacean(xtest, xtest, 10)
+svr_custom.fit(gram_train, rlearn)
+svr_custom.predict(gram)
+
 r_rbf = svr_rbf.fit(xlearn, rlearn).predict(xtest)
 r_lin = svr_lin.fit(xlearn, rlearn).predict(xtest)
 r_poly = svr_poly.fit(xlearn, rlearn).predict(xtest)
@@ -22,17 +30,17 @@ r_poly = svr_poly.fit(xlearn, rlearn).predict(xtest)
 print('Tu liczymy błąd aproksymacji:')
 blad_rbf=0;
 for i in range (0,len(r_rbf)-1):
-    blad_rbf=blad_rbf+(r_rbf[i]-rtest[i])**2  
+    blad_rbf=blad_rbf+(r_rbf[i]-rtest[i])**2
 print('Błąd regresji dla funkcji rbf: ', blad_rbf)
 
 blad_lin=0;
 for i in range (0,len(r_lin)-1):
-    blad_lin=blad_lin+(r_lin[i]-rtest[i])**2  
+    blad_lin=blad_lin+(r_lin[i]-rtest[i])**2
 print('Błąd regresji dla funkcji liniowej: ', blad_lin)
 
 blad_poly=0;
 for i in range (0,len(r_poly)-1):
-    blad_poly=blad_poly+(r_poly[i]-rtest[i])**2  
+    blad_poly=blad_poly+(r_poly[i]-rtest[i])**2
 print('Błąd regresji dla funkcji wielomianowej: ', blad_poly)
 
 
@@ -55,5 +63,3 @@ print('Błąd regresji dla funkcji wielomianowej: ', blad_poly)
 ##fig.colorbar(surf3, shrink=0.5, aspect=5)
 ##plt.title('Support Vector Regression')
 ##plt.show()
-
-
